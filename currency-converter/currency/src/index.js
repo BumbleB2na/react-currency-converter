@@ -10,7 +10,7 @@ class CurrencyConverter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            'currencyPromise': postToApi( postDataA )
+            'currencyPromise': postToApi( postDataC )
         }
     }
     render() {
@@ -41,24 +41,29 @@ const postDataC = {
 function postToApi(objPost) {
     const apiUrl = (IS_INTERNAL) ? _apiInternal : _apiExternal;
     return new Promise(function(resolve, reject) {
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify( objPost )
-        })
-        .then(function(result) {
-            console.log(result);
-            result.json().then(function(items) {
-                console.log(items);
-                resolve(items);
+        try {
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( objPost )
+            })
+            .then(function(result) {
+                console.log(result);
+                result.json().then(function(items) {
+                    console.log(items);
+                    resolve(items);
+                });
+            }, function(err) {
+                console.log(err);
+                reject(err);
             });
-        }, function(err) {
+        } catch(err) {
             console.log(err);
             reject(err);
-        });
+        }
     });
 }
 

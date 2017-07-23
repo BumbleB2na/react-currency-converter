@@ -45,6 +45,11 @@ var self = module.exports = {
 				self.sendResponse(res, 403, 'Please provide the date as a string');
 				return;
 			}
+
+			if (new Date(data.date) < new Date('2000-01-02')) {
+				self.sendResponse(res, 403, 'Please do not use date earlier than year 2000');
+				return;
+			}
 			var date = data.date;
 		} else {
 			var date = 'latest';
