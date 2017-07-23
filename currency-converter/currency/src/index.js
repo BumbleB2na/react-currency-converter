@@ -6,7 +6,7 @@ const IS_INTERNAL = true;
 const _apiInternal = 'http://localhost:8888/api/0.2/';
 const _apiExternal = 'http://example.com:8888/api/0.2';  //TODO: set example.com:8888
   
-class CurrencyConverter extends React.Component {
+class Currency extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,11 +26,120 @@ class CurrencyConverter extends React.Component {
 
     render() {
         return (
-            <h1>Currency converter</h1>
+            <div>
+                <h1>CURRENCY</h1>
+                <Nav getRateActive={true} />
+                <GetRate />
+                <ThirtyDayHistory />
+            </div>
         );
     }
 }
 
+class Nav extends React.Component {
+    render() {
+        const activeRate = (this.props.getRateActive) ? 'active' : '';
+        const activeHistory = (this.props.getRateActive) ? '' : 'active';
+        return (
+            <nav>
+                <button className={activeRate}>GET RATE</button>
+                <button className={activeHistory}>RATE 30 DAY HISTORY</button>
+            </nav>
+        );
+    }
+}
+
+class GetRate extends React.Component {
+    render() {
+        return (
+            <div id="getRate">
+                <InputFormGetRate />
+                <ResultTable />
+            </div>
+        );
+    }
+}
+class InputFormGetRate extends React.Component {
+    render() {
+        return (
+            <section>
+                <form>
+                    <input type="currency" placeholder="Amount" />
+                    <DropDownFrom />
+                    <DropDownTo />
+                    <ButtonGo />
+                </form>
+            </section>
+        );
+    }
+}
+class ResultTable extends React.Component {
+    render() {
+        return (
+            <section>
+                1 USD = 11.8374 CAD
+            </section>
+        );
+    }
+}
+
+
+class ThirtyDayHistory extends React.Component {
+    render() {
+        return (
+            <div id="thirtyDayHistory">
+                <InputFormGetRate />
+                <ResultTable />
+            </div>
+        );
+    }
+}
+class InputFormGetHistory extends React.Component {
+    render() {
+        return (
+            <section>
+                <form>
+                    <DropDownFrom />
+                    <DropDownTo />
+                    <ButtonGo />
+                </form>
+            </section>
+        );
+    }
+}
+class ResultGraph extends React.Component {
+    render() {
+        return (
+            <section>
+                GRAPH
+            </section>
+        );
+    }
+}
+
+function DropDownFrom() {
+    return (
+        <select>
+            <option className="select-option-hidden">From</option>
+            <option value="USD">USD</option>
+            <option value="CAD">CAD</option>
+        </select>
+    );
+}
+function DropDownTo() {
+    return (
+        <select>
+            <option className="select-option-hidden">To</option>
+            <option value="USD">USD</option>
+            <option value="CAD">CAD</option>
+        </select>
+    );
+}
+function ButtonGo() {
+    return (
+        <input type="submit" value="GO" />
+    );
+}
   
 const postDataA = {
     base: 'CAD',
@@ -79,7 +188,7 @@ function postToApi(objPost) {
 // ========================================
 
 ReactDOM.render(
-    <CurrencyConverter />,
+    <Currency />,
     document.getElementById('root')
 );
   

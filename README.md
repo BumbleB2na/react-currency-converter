@@ -31,7 +31,7 @@ Reference Thinking in react guide: https://facebook.github.io/react/docs/thinkin
       - DropDownTo
       - ButtonGo
     - ResultTable
-  - 30DayHistory
+  - ThirtyDayHistory
     - InputFormGetHistory
       - DropDownFrom
       - DropDownTo
@@ -42,7 +42,7 @@ Reference Thinking in react guide: https://facebook.github.io/react/docs/thinkin
    - build components from mockups that only have render() methods and use props that were passed down to them
      - build top-down... from main container down to smaller components
       - *Does not yet have interactive functionality*
-      - *Use proprs to pass data down - don't use state yet*, state will come in next step
+      - *Use props to pass data down - don't use state yet*, state will come in next step
 
 3. Identify the minimal (but complete) representation of UI state
    - list off all the parts in the application (e.g. checkbox, search input, table)
