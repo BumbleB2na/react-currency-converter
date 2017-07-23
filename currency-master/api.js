@@ -1,9 +1,9 @@
-
 var rest = require('restler');
 
 var self = module.exports = {
-	
+
 	ver002: (data, res) => {
+
 		if (typeof data.base === 'undefined' || data.base === '') {
 			self.sendResponse(res, 403, 'Please supply a base currency symbol');
 			return;
@@ -11,7 +11,10 @@ var self = module.exports = {
 
 		const base = data.base.toUpperCase();
 
-		const url = `https://api.fixer.io/latest?symbols=${data.symbol.from},${data.symbol.to}`;
+		let symbols,
+			date;
+
+		let url = `https://api.fixer.io/latest?symbols=${data.symbol.from},${data.symbol.to}`;
 
 		if (typeof data.symbol === 'undefined' || data.symbol === '') {
 			self.sendResponse(res, 403, 'Please supply a currency symbol to convert to');
@@ -32,11 +35,11 @@ var self = module.exports = {
 				str += symbolArray[i].toUpperCase() + ',';
 			}
 
-			const symbols = str;
+			symbols = str;
 
 		} else {
 
-			const symbols = data.symbol.toUpperCase();
+			symbols = data.symbol.toUpperCase();
 
 		}
 
@@ -50,14 +53,14 @@ var self = module.exports = {
 				self.sendResponse(res, 403, 'Please do not use date earlier than year 2000');
 				return;
 			}
-			const date = data.date;
+			date = data.date;
 		} else {
-			const date = 'latest';
+			date = 'latest';
 		}
 
-		const url2 = `http://api.fixer.io/${date}?base=${base}&symbols=${symbols}`;
+		url = `http://api.fixer.io/${date}?base=${base}&symbols=${symbols}`;
 
-        rest.get(url2).on('complete', function(err, response) {
+        rest.get(url).on('complete', function(err, response) {
 
             if (response.statusCode == 200) {
 
