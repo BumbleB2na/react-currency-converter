@@ -9,10 +9,12 @@ const _apiExternal = 'http://example.com:8888/api/0.2';  //TODO: set example.com
 class CurrencyConverter extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            currency: null
+        }
     }
-    getCurrencyAsync(objPost) {
-        postToApi( objPost )
+    componentDidMount() {     
+        postToApi( postDataC )
         .then((result) => {
             this.setState({
                 currency: result
@@ -21,8 +23,8 @@ class CurrencyConverter extends React.Component {
             console.log('Error', err);
         })
     }
+
     render() {
-        this.getCurrencyAsync( postDataC )
         return (
             <h1>Currency converter</h1>
         );
