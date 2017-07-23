@@ -50,10 +50,34 @@ class GetRate extends React.Component {
             results: [],
             resultMessage: '',
         };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
+        this.handleAmountChange = this.handleAmountChange.bind(this);
     }
-    //TODO move getRateAsync call within handleSubmit
-    componentDidMount() {
-        this.getRateAsync(); 
+    handleFromChange(value) {
+        this.setState({
+            from: value
+        });
+    }
+    handleToChange(value) {
+        this.setState({
+            to: value
+        });
+    }
+    handleAmountChange(value) {
+        this.setState({
+            amount: value
+        });
+    }
+    handleSubmit(e) {
+        if(this.state.from === this.state.to) {
+            this.setState({
+                resultMessage: `${this.state.amount} ${this.state.from} = ${this.state.amount} ${this.state.to}`
+            });
+            return;
+        }
+        this.getRateAsync();
     }
     getRateAsync() {
         postToApi({
@@ -65,7 +89,7 @@ class GetRate extends React.Component {
             const r = result.results[0];
             this.setState({
                 results: result.results,
-                resultMessage: `${result.amount} ${r.from} = ${r.fullResult} ${r.to}`
+                resultMessage: `${result.amount} ${result.base} = ${r.roundedResult} ${r.to}`
             });
         }, (err) => {
             console.log('Error', err);
@@ -80,6 +104,10 @@ class GetRate extends React.Component {
                     amount={this.state.amount} 
                     from={this.state.from} 
                     to={this.state.to} 
+                    onAmountInput={this.handleAmountChange}
+                    onFromChange={this.handleFromChange}
+                    onToChange={this.handleToChange}
+                    onCurrencyFormSubmit={this.handleSubmit} 
                 />
                 <ResultTable message={this.state.resultMessage} />
             </div>
@@ -89,15 +117,32 @@ class GetRate extends React.Component {
 class InputFormGetRate extends React.Component {
     constructor(props) {
         super(props);
+        this.handleAmountChange = this.handleAmountChange.bind(this);
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleAmountChange(e) {
+        this.props.onAmountInput(e.target.value);
+    }
+    handleFromChange(value) {
+        this.props.onFromChange(value);
+    }
+    handleToChange(value) {
+        this.props.onToChange(value);
+    }
+    handleSubmit(e) {
+        e.preventDefault();
+        this.props.onCurrencyFormSubmit(e);
     }
     render() {
         return (
             <section>
-                <form>
-                    <input type="currency" placeholder="Amount" value={this.props.amount} />
-                    <DropDownFrom from={this.props.from} />
-                    <DropDownTo to={this.props.to} />
-                    <ButtonGo />
+                <form onSubmit={this.handleSubmit}>
+                    <input type="currency" placeholder="Amount" defaultValue={this.props.amount} onChange={this.handleAmountChange} />
+                    <DropDownFrom from={this.props.from} onFromChange={this.handleFromChange} />
+                    <DropDownTo to={this.props.to} onToChange={this.handleToChange} />
+                    <input type="submit" value="GO" />
                 </form>
             </section>
         );
@@ -124,10 +169,33 @@ class ThirtyDayHistory extends React.Component {
             resultDateRange: '',
             resultGraphData: []
         }
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
-    //TODO move getDollarHistoryAsync call within handleSubmit
+    //show thirty day history on init
     componentDidMount() {
         this.getDollarHistoryAsync(); 
+    }
+    handleFromChange(value) {
+        this.setState({
+            from: value
+        });
+    }
+    handleToChange(value) {
+        this.setState({
+            to: value
+        });
+    }
+    handleSubmit(e) {
+        if(this.state.from === this.state.to) {
+            this.setState({
+                resultDateRange: 'Please choose different From and To currency types',
+                resultGraphData: []
+            });
+            return;
+        }
+        this.getDollarHistoryAsync();
     }
     //get last 30 days beginning with today
     getDollarHistoryAsync() {
@@ -180,6 +248,9 @@ class ThirtyDayHistory extends React.Component {
                 <InputFormGetHistory
                     from={this.state.from} 
                     to={this.state.to}
+                    onFromChange={this.handleFromChange}
+                    onToChange={this.handleToChange}
+                    onCurrencyFormSubmit={this.handleSubmit}
                 />
                 <ResultGraph
                     dateRange={this.state.resultDateRange}
@@ -192,14 +263,27 @@ class ThirtyDayHistory extends React.Component {
 class InputFormGetHistory extends React.Component {
     constructor(props) {
         super(props);
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleFromChange(value) {
+        this.props.onFromChange(value);
+    }
+    handleToChange(value) {
+        this.props.onToChange(value);
+    }
+    handleSubmit(e) {
+        e.preventDefault();
+        this.props.onCurrencyFormSubmit(e);
     }
     render() {
         return (
             <section>
-                <form>
-                    <DropDownFrom from={this.props.from} />
-                    <DropDownTo to={this.props.to} />
-                    <ButtonGo />
+                <form onSubmit={this.handleSubmit}>
+                    <DropDownFrom from={this.props.from} onFromChange={this.handleFromChange} />
+                    <DropDownTo to={this.props.to} onToChange={this.handleToChange} />
+                    <input type="submit" value="GO" />
                 </form>
             </section>
         );
@@ -209,7 +293,7 @@ class ResultGraph extends React.Component {
     render() {
         let rows = new Array(30);
         for(let i = 0; i < this.props.graphData.length; i++) {
-            rows[i] = <tr><td>{this.props.graphData[i].date}</td><td>{this.props.graphData[i].amount}</td></tr>;
+            rows[i] = <tr key={i}><td>{this.props.graphData[i].date}</td><td>{this.props.graphData[i].amount}</td></tr>;
         }
         return (
             <section>
@@ -229,9 +313,16 @@ class ResultGraph extends React.Component {
 }
 
 class DropDownFrom extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleFromChange = this.handleFromChange.bind(this);
+    }
+    handleFromChange(e) {
+        this.props.onFromChange(e.target.value);
+    }
     render() {
         return (
-            <select value={this.props.from}>
+            <select defaultValue={this.props.from} onChange={this.handleFromChange}>
                 <option className="select-option-hidden">From</option>
                 <option value="USD">USD</option>
                 <option value="CAD">CAD</option>
@@ -240,20 +331,22 @@ class DropDownFrom extends React.Component {
     }
 }
 class DropDownTo extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleToChange = this.handleToChange.bind(this);
+    }
+    handleToChange(e) {
+        this.props.onToChange(e.target.value);
+    }
     render() {
         return (
-            <select value={this.props.to}>
+            <select defaultValue={this.props.to} onChange={this.handleToChange}>
                 <option className="select-option-hidden">To</option>
                 <option value="USD">USD</option>
                 <option value="CAD">CAD</option>
             </select>
         );
     }
-}
-function ButtonGo() {
-    return (
-        <input type="submit" value="GO" />
-    );
 }
 
 
