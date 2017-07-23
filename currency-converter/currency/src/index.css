@@ -1,5 +1,15 @@
-nav button.active {
-  background-color: #ccc;
+nav button:hover {
+  background-color: #dedede;
+}
+nav button.active,
+nav button.active:hover {
+  background-color: #bababa;
+}
+form input[type="submit"] {
+  background-color: lightgreen;
+}
+form input[type="submit"]:hover {
+  background-color: green;
 }
 
 .select-option-hidden

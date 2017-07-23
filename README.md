@@ -46,6 +46,18 @@ Reference Thinking in react guide: https://facebook.github.io/react/docs/thinkin
 
 3. Identify the minimal (but complete) representation of UI state
    - list off all the parts in the application (e.g. checkbox, search input, table)
+
+### List of parts
+- the selected nav item            state
+- the input amount user enters     state
+- the value of from select         state
+- the value of to select           state
+- the result retrieved on submit   state
+- the displayed calculated result  props
+- the displayed result graph       props
+  - date range (last 30 days)      props
+  - graph                          props
+
    - go through checklist and ask the 3 questions...
    - result: list of parts that will need to be controlled by state.
      - think of minimal state components will use for functionality; don't repeat yourself
