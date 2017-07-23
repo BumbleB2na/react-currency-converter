@@ -10,12 +10,12 @@ router.use(function (req, res, next) {
 });
 
 router.get('/', jsonParser, function(req, res){
-    res.status(200).send('Use /api/0.1 as end point');
+    res.status(200).send('Use /api/0.2 as end point');
     res.end();
 });
 
 router.post('/', jsonParser, function(req, res){
-    res.status(200).send('Use /api/0.1 as end point');
+    res.status(200).send('Use /api/0.2 as end point');
     res.end();
 });
 

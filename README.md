@@ -4,8 +4,8 @@
 - add github repo to harddrive for project
 - open project in VS code
   - in Terminal use: npm install and npm start to watch changes and get error messages on traspilation
-    - local: localhost:8888/api/0.1/
-    - hosted: example.com:8888/api/0.1
+    - local: localhost:8888/api/0.2/
+    - hosted: example.com:8888/api/0.2
 
 ## Task
 - fix bug in app

@@ -3,20 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 const IS_INTERNAL = true;
-const _apiInternal = 'http://localhost:8888/api/0.1/';
-const _apiExternal = 'http://example.com:8888/api/0.1';  //TODO: set example.com:8888
+const _apiInternal = 'http://localhost:8888/api/0.2/';
+const _apiExternal = 'http://example.com:8888/api/0.2';  //TODO: set example.com:8888
   
 class CurrencyConverter extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            'currencyPromise': postToApi( postDataC )
-        }
+        this.state = {}
+    }
+    getCurrencyAsync(objPost) {
+        postToApi( objPost )
+        .then((result) => {
+            this.setState({
+                currency: result
+            });
+        }, (err) => {
+            console.log('Error', err);
+        })
     }
     render() {
-      return (
-        <h1>Currency converter</h1>
-      );
+        this.getCurrencyAsync( postDataC )
+        return (
+            <h1>Currency converter</h1>
+        );
     }
 }
 
@@ -35,35 +44,32 @@ const postDataC = {
     base: 'CAD',
     amount: '10',
     symbol: ['USD', 'EUR'],
-    date: '1985-03-15'
+    date: '2985-03-15'
 };
 
 function postToApi(objPost) {
     const apiUrl = (IS_INTERNAL) ? _apiInternal : _apiExternal;
     return new Promise(function(resolve, reject) {
-        try {
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify( objPost )
-            })
-            .then(function(result) {
-                console.log(result);
-                result.json().then(function(items) {
-                    console.log(items);
-                    resolve(items);
-                });
-            }, function(err) {
-                console.log(err);
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify( objPost )
+        })
+        .then((result) => {
+            console.log(result);
+            result.json()
+            .then((items) => {
+                console.log(items);
+                resolve(items);
+            }, (err) => {
                 reject(err);
-            });
-        } catch(err) {
-            console.log(err);
+            })
+        }, (err) => {
             reject(err);
-        }
+        })
     });
 }
 
