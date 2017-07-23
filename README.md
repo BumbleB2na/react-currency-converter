@@ -1,4 +1,4 @@
-# Plan
+# Plan 
 
 ## Setup
 - add github repo to harddrive for project
