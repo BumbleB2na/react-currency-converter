@@ -122,35 +122,55 @@ class ThirtyDayHistory extends React.Component {
             to: 'CAD',
             results: [],
             resultDateRange: '',
-            resultGraphHtml: ''
+            resultGraphData: []
         }
     }
     //TODO move getDollarHistoryAsync call within handleSubmit
     componentDidMount() {
         this.getDollarHistoryAsync(); 
     }
-    //TODO loop and get last 30 days beginning with today
-    getLastMonthDateForApi() {
-        var today = new Date();
-        var thirtyDaysAgo = new Date(new Date().setDate(today.getDate()-30));
-        return formatDate(thirtyDaysAgo);
-    }
+    //get last 30 days beginning with today
     getDollarHistoryAsync() {
-        postToApi({
-            base: this.state.from,
-            symbol: this.state.to,
-            amount: '1',
-            date: this.getLastMonthDateForApi()
-        })
-        .then((result) => {
-            const r = result.results[0];
+        const today = new Date();
+        const thirtyDaysAgo = new Date( new Date().setDate(today.getDate() - 30) );
+        let graphDay = thirtyDaysAgo;
+        let thirtyPromises = new Array(30);
+        for(let i=0; i < 30; i++) {
+            graphDay = new Date( new Date(thirtyDaysAgo).setDate(thirtyDaysAgo.getDate() + i) );
+            const graphDateForApi = formatDate(graphDay);
+            thirtyPromises[i] = 
+                postToApi({
+                    base: this.state.from,
+                    symbol: this.state.to,
+                    amount: '1',
+                    date: graphDateForApi
+                })
+                .catch((err) => {
+                    console.log('Error', err);
+                });
+        }
+        Promise.all(thirtyPromises)
+        .then(results => {
+            console.log('promises all returned');
+
+            const resultDateRange = `${results[0].dated} - ${results[results.length - 1].dated}`;
+            let resultGraphData = new Array(30);
+            for(let i = 0; i < results.length; i++) {
+                const roundedAmount = results[i].results[0].roundedResult;
+                resultGraphData[i] = {
+                    date: results[i].dated,
+                    amount: roundedAmount
+                };
+            }
+
             this.setState({
-                results: result.results,
-                resultMessage: `${result.amount} ${r.from} = ${r.fullResult} ${r.to}`
+                resultDateRange: resultDateRange,
+                resultGraphData: resultGraphData
             });
-        }, (err) => {
-            console.log('Error', err);
         })
+        .catch((err) => {
+            console.log('Error', err);
+        });
     }
     render() {
         const activeRate = (this.props.getRateActive) ? 'active' : '';
@@ -161,7 +181,10 @@ class ThirtyDayHistory extends React.Component {
                     from={this.state.from} 
                     to={this.state.to}
                 />
-                <ResultGraph />
+                <ResultGraph
+                    dateRange={this.state.resultDateRange}
+                    graphData={this.state.resultGraphData}
+                />
             </div>
         );
     }
@@ -184,9 +207,22 @@ class InputFormGetHistory extends React.Component {
 }
 class ResultGraph extends React.Component {
     render() {
+        let rows = new Array(30);
+        for(let i = 0; i < this.props.graphData.length; i++) {
+            rows[i] = <tr><td>{this.props.graphData[i].date}</td><td>{this.props.graphData[i].amount}</td></tr>;
+        }
         return (
             <section>
-                GRAPH
+                <div>{this.props.dateRange}</div>
+                <table>
+                    <thead>
+                        <th>Date</th>
+                        <th>Amount</th>
+                    </thead>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                </table>
             </section>
         );
     }
