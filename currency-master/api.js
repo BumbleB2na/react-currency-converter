@@ -1,17 +1,17 @@
+
 var rest = require('restler');
 
 var self = module.exports = {
-
+	
 	ver001: (data, res) => {
-
 		if (typeof data.base === 'undefined' || data.base === '') {
 			self.sendResponse(res, 403, 'Please supply a base currency symbol');
 			return;
 		}
 
-		var base = data.base.toUpperCase();
+		const base = data.base.toUpperCase();
 
-		var url = `https://api.fixer.io/latest?symbols=${data.symbol.from},${data.symbol.to}`;
+		const url = `https://api.fixer.io/latest?symbols=${data.symbol.from},${data.symbol.to}`;
 
 		if (typeof data.symbol === 'undefined' || data.symbol === '') {
 			self.sendResponse(res, 403, 'Please supply a currency symbol to convert to');
@@ -25,18 +25,18 @@ var self = module.exports = {
 
 		if (typeof data.symbol === 'object') {
 
-			var str = '';
-			var symbolArray = data.symbol;
+			let str = '';
+			const symbolArray = data.symbol;
 
 			for (let i = symbolArray.length - 1; i >= 0; i--) {
 				str += symbolArray[i].toUpperCase() + ',';
 			}
 
-			var symbols = str;
+			const symbols = str;
 
 		} else {
 
-			var symbols = data.symbol.toUpperCase();
+			const symbols = data.symbol.toUpperCase();
 
 		}
 
@@ -50,18 +50,18 @@ var self = module.exports = {
 				self.sendResponse(res, 403, 'Please do not use date earlier than year 2000');
 				return;
 			}
-			var date = data.date;
+			const date = data.date;
 		} else {
-			var date = 'latest';
+			const date = 'latest';
 		}
 
-		var url = `http://api.fixer.io/${date}?base=${base}&symbols=${symbols}`;
+		const url2 = `http://api.fixer.io/${date}?base=${base}&symbols=${symbols}`;
 
-        rest.get(url).on('complete', function(err, response) {
+        rest.get(url2).on('complete', function(err, response) {
 
             if (response.statusCode == 200) {
 
-            	var returns = {
+            	const returns = {
             		base: data.base,
             		amount: data.amount,
             		results: self.convertAmount(data.amount, JSON.parse(response.rawEncoded)),
@@ -83,14 +83,14 @@ var self = module.exports = {
 
 	convertAmount: (amount, data) => {
 
-		var rates = data.rates;
-		var returns = [];
+		const rates = data.rates;
+		let returns = [];
 
 		for (let r in rates) {
 
 			if (rates.hasOwnProperty(r)) {
 
-				var convert = (amount * rates[r]);
+				const convert = (amount * rates[r]);
 				returns.push({from: data.base, to: r, roundedResult: convert.toFixed(2), fullResult: convert, rate: rates[r]})
 
 			}
