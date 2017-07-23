@@ -5,6 +5,14 @@ nav button.active,
 nav button.active:hover {
   background-color: #bababa;
 }
+
+.view {
+  display: none;
+}
+.view.active {
+  display: block;
+}
+
 form input[type="submit"] {
   background-color: lightgreen;
 }

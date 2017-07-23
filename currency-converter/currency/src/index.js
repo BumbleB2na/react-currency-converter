@@ -10,31 +10,46 @@ class Currency extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            getRateActive: true
+            isRateActive: true
         }
+        this.handleClickNavButton = this.handleClickNavButton.bind(this);
+    }
+    handleClickNavButton(value) {
+        this.setState({
+            isRateActive: value
+        });
     }
     render() {
-        const activeRate = (this.state.getRateActive) ? 'active' : '';
-        const activeHistory = (this.state.getRateActive) ? '' : 'active';
         return (
             <div>
                 <h1>CURRENCY</h1>
-                <Nav getRateActive={true} />
-                <GetRate className={activeRate} />
-                <ThirtyDayHistory className={activeHistory} />
+                <Nav onClickNavButton={this.handleClickNavButton} isRateActive={this.state.isRateActive} />
+                <GetRate isRateActive={this.state.isRateActive} />
+                <ThirtyDayHistory isRateActive={this.state.isRateActive} />
             </div>
         );
     }
 }
 
 class Nav extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleClickRate = this.handleClickRate.bind(this);
+        this.handleClickHistory = this.handleClickHistory.bind(this);
+    }
+    handleClickRate(e) {
+        this.props.onClickNavButton(true);
+    }
+    handleClickHistory(e) {
+        this.props.onClickNavButton(false);
+    }
     render() {
-        const activeRate = (this.props.getRateActive) ? 'active' : '';
-        const activeHistory = (this.props.getRateActive) ? '' : 'active';
+        const activeRate = (this.props.isRateActive) ? 'active' : '';
+        const activeHistory = (this.props.isRateActive) ? '' : 'active';
         return (
             <nav>
-                <button className={activeRate}>GET RATE</button>
-                <button className={activeHistory}>RATE 30 DAY HISTORY</button>
+                <button onClick={this.handleClickRate} className={activeRate}>GET RATE</button>
+                <button onClick={this.handleClickHistory} className={activeHistory}>RATE 30 DAY HISTORY</button>
             </nav>
         );
     }
@@ -44,9 +59,9 @@ class GetRate extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            amount: '1',
-            from: 'USD',
-            to: 'CAD',
+            amount: '',
+            from: '',
+            to: '',
             results: [],
             resultMessage: '',
         };
@@ -71,6 +86,12 @@ class GetRate extends React.Component {
         });
     }
     handleSubmit(e) {
+        if(!this.state.amount || !this.state.from || !this.state.to) {
+            this.setState({
+                resultMessage: `Please ensure no input fields are empty to get rates`
+            });
+            return;
+        }
         if(this.state.from === this.state.to) {
             this.setState({
                 resultMessage: `${this.state.amount} ${this.state.from} = ${this.state.amount} ${this.state.to}`
@@ -96,10 +117,9 @@ class GetRate extends React.Component {
         })
     }
     render() {
-        const activeRate = (this.props.getRateActive) ? 'active' : '';
-        const activeHistory = (this.props.getRateActive) ? '' : 'active';
+        const activeRate = (this.props.isRateActive) ? 'view active' : 'view';
         return (
-            <div id="getRate">
+            <div id="getRate" className={activeRate}>
                 <InputFormGetRate 
                     amount={this.state.amount} 
                     from={this.state.from} 
@@ -163,8 +183,8 @@ class ThirtyDayHistory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            from: 'USD',
-            to: 'CAD',
+            from: '',
+            to: '',
             results: [],
             resultDateRange: '',
             resultGraphData: []
@@ -172,10 +192,6 @@ class ThirtyDayHistory extends React.Component {
         this.handleFromChange = this.handleFromChange.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    //show thirty day history on init
-    componentDidMount() {
-        this.getDollarHistoryAsync(); 
     }
     handleFromChange(value) {
         this.setState({
@@ -241,10 +257,9 @@ class ThirtyDayHistory extends React.Component {
         });
     }
     render() {
-        const activeRate = (this.props.getRateActive) ? 'active' : '';
-        const activeHistory = (this.props.getRateActive) ? '' : 'active';
+        const activeHistory = (this.props.isRateActive) ? 'view ' : 'view active';
         return (
-            <div id="thirtyDayHistory">
+            <div id="thirtyDayHistory" className={activeHistory}>
                 <InputFormGetHistory
                     from={this.state.from} 
                     to={this.state.to}
