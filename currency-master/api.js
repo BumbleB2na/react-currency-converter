@@ -28,7 +28,7 @@ var self = module.exports = {
 			var str = '';
 			var symbolArray = data.symbol;
 
-			for (var i = symbolArray.length - 1; i >= 0; i--) {
+			for (let i = symbolArray.length - 1; i >= 0; i--) {
 				str += symbolArray[i].toUpperCase() + ',';
 			}
 
@@ -86,7 +86,7 @@ var self = module.exports = {
 		var rates = data.rates;
 		var returns = [];
 
-		for (var r in rates) {
+		for (let r in rates) {
 
 			if (rates.hasOwnProperty(r)) {
 
