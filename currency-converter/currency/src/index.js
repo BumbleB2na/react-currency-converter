@@ -10,14 +10,14 @@ class CurrencyConverter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currency: null
+            results: []
         }
     }
     componentDidMount() {     
         postToApi( postDataC )
         .then((result) => {
             this.setState({
-                currency: result
+                results: result.results
             });
         }, (err) => {
             console.log('Error', err);

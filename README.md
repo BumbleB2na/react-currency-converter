@@ -18,8 +18,25 @@ Reference Thinking in react guide: https://facebook.github.io/react/docs/thinkin
 1. Break UI in to a component hierarchy
    - open psd file in photoshop on other computer
      - draw boxes around components to form hierarchy
-       - *Use layer names in psd file to help name components* if they exist - name the components.
+       - *Use layer names in psd file to help name components* if they exist - name the components.  
      - email image to self and open on main computer
+
+### Hierarchy
+- Currency
+  - Nav
+  - GetRate
+    - InputFormGetRate
+      - InputAmount
+      - DropDownFrom
+      - DropDownTo
+      - ButtonGo
+    - ResultTable
+  - 30DayHistory
+    - InputFormGetHistory
+      - DropDownFrom
+      - DropDownTo
+      - ButtonGo
+    - ResultGraph
 
 2. Build a static version in React
    - build components from mockups that only have render() methods and use props that were passed down to them
