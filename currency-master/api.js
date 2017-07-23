@@ -55,7 +55,7 @@ var self = module.exports = {
 			var date = 'latest';
 		}
 
-		var url = `http://api.fixer.io/{date}?base={base}&symbols={symbols}`;
+		var url = `http://api.fixer.io/${date}?base=${base}&symbols=${symbols}`;
 
         rest.get(url).on('complete', function(err, response) {
 
