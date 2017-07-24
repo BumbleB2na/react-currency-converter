@@ -5,13 +5,13 @@
 Converts dollar ($) amount between CAD and USD.  
 Shows 30 day history of $1 currency conversions between CAD and USD.  
   
-(Demo)[https://react-currency-converter.herokuapp.com/]  
+[Demo](https://react-currency-converter.herokuapp.com/)  
 
 ## Node server api
 
 Accesses node server api to convert currency or to get historical currency amounts by the dollar  
   
-(Api)[https://react-currency-api.herokuapp.com/api/0.2]  
+[Api](https://react-currency-api.herokuapp.com/api/0.2)  
 
 ## Notes
 
