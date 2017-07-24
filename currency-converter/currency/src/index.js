@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const IS_INTERNAL = true;
+const IS_INTERNAL = false;
 const _apiInternal = 'http://localhost:8888/api/0.2/';
-const _apiExternal = 'http://example.com:8888/api/0.2';  //TODO: set example.com:8888
+const _apiExternal = 'https://react-currency-converter-api.herokuapp.com/api/0.2';  //TODO: set example.com:8888
   
 class Currency extends React.Component {
     constructor(props) {
