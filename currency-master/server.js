@@ -10,7 +10,7 @@ var errorhandler = require('errorhandler'),
 	helmet = require('helmet'),
 
 	app = express();
-	port = 8888;
+	port =  process.env.PORT || 8888;  //process.env.PORT used by heroku
 
 	app.use(function(req, res, next) {
 		res.header('Access-Control-Allow-Credentials', true);
